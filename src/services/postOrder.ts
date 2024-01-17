@@ -1,29 +1,26 @@
 import { BASE_API_URL, DEVICE_ID } from '@/constants';
 
-// interface Data {
-// 	amount: string;
-// 	currency: string;
-// 	reference: string;
-// }
-export async function createOrder(data: FormData) {
-	console.log('🚀 ~ createOrder ~ data:', data);
+export async function createOrder(data: any) {
+	const objData = JSON.parse(data);
 	try {
-		console.log(BASE_API_URL);
-		console.log(DEVICE_ID);
+		const newData = new FormData();
+
+		newData.append('expected_output_amount', objData.amount);
+		newData.append('input_currency', objData.currency.symbol);
+		newData.append('notes', objData.concept);
+		newData.append('merchant_urlko', '/payment/error');
+		newData.append('merchant_urlok', '/payment/success');
+
 		const response = await fetch(`${BASE_API_URL}/orders/`, {
 			method: 'POST',
 			headers: {
 				'X-Device-Id': DEVICE_ID,
-				'Content-Type': 'multipart/form-data',
-				Accept: 'application/json',
 			},
-			body: data,
+			body: newData,
 		});
-		console.log('🚀 ~ createOrder ~ response:', response);
-		// const json = await response.json();
-		// console.log('🚀 ~ createOrder ~ json:', json);
+		const json = await response.json();
 
-		//return json;
+		return json;
 	} catch (err) {
 		console.log(err);
 	}

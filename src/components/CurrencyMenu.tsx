@@ -1,8 +1,10 @@
 import Image from 'next/image';
 import { useState } from 'react';
-import ArrowDown from '../../public/icons/arrow-down.svg';
-import Tick from '../../public/icons/tick-circle.svg';
 import { Currency } from '@/types';
+import { CurrencyOption } from './CurrencyOption';
+import { Input } from './Input';
+import SearchIcon from '../../public/icons/search-normal.svg';
+import { useMenu } from '@/hooks/useMenu';
 
 interface CurrencyMenuProps {
 	currencies: Currency[];
@@ -18,56 +20,23 @@ export const CurrencyMenu = ({
 	errorMsg,
 }: CurrencyMenuProps) => {
 	const [showMenu, setShowMenu] = useState(false);
+	const { searchInput, inputChangeHandler, filteredCurrencies } =
+		useMenu(currencies);
 
 	const clickHandler = (currency: Currency) => {
 		setShowMenu(false);
 		onChangeHandler(currency);
 	};
 
-	const CurrencyOption = ({
-		selected = false,
-		currency,
-		imgSize = 32,
-		showSymbol = false,
-	}: {
-		selected?: boolean;
-		currency: Currency;
-		imgSize?: number;
-		showSymbol?: boolean;
-	}) => {
-		return (
-			<>
-				<div className={`flex ${showSymbol ? 'gap-3' : 'gap-2'}`}>
-					<Image
-						src={currency.image}
-						alt={`Logo for ${currency.name}`}
-						width={imgSize}
-						height={imgSize}
-						className='object-contain'
-					/>
-					<div className='flex flex-col'>
-						<span
-							className={`text-sm ${showSymbol ? 'font-bold' : 'font-normal'}`}
-						>
-							{currency.name}
-						</span>
-						{showSymbol && (
-							<span className='text-xs text-gray-500'>{currency.symbol}</span>
-						)}
-					</div>
-				</div>
-				<Image
-					src={selected ? Tick : ArrowDown}
-					alt={selected ? 'Tick circle icon' : 'Arrow Down icon'}
-				/>
-			</>
-		);
-	};
-
 	return (
 		<>
 			<div className='flex flex-col w-full gap-1'>
-				<label htmlFor='cryptocurrency'>Seleccionar moneda</label>
+				<label
+					htmlFor='cryptocurrency'
+					className='text-sm font-bold text-day-darker'
+				>
+					Seleccionar moneda
+				</label>
 				<button
 					id='cryptocurrency'
 					type='button'
@@ -80,22 +49,35 @@ export const CurrencyMenu = ({
 			</div>
 
 			{showMenu && (
-				<div className='h-full w-full flex flex-col absolute bg-white justify-between p-6 rounded-2xl'>
-					<h5 className='text-lg font-bold mb-4'>Seleccionar criptomoneda</h5>
-					{currencies.map((currency, idx) => (
-						<button
-							type='button'
-							key={idx}
-							className='flex justify-between w-full'
-							onClick={() => clickHandler(currency)}
-						>
-							<CurrencyOption
-								currency={currency}
-								selected={activeCurrency.symbol === currency.symbol}
-								showSymbol
-							/>
-						</button>
-					))}
+				<div className='h-full w-full flex flex-col absolute bg-white p-6 rounded-2xl'>
+					<h5 className='text-lg font-bold mb-4 text-day-darker'>
+						Seleccionar criptomoneda
+					</h5>
+
+					<Input
+						icon={<Image src={SearchIcon} alt='search icon' />}
+						placeHolder='Buscar'
+						name='search'
+						type='text'
+						value={searchInput}
+						onChangeHandler={inputChangeHandler}
+					/>
+					<div className='flex flex-col gap-8 mt-4'>
+						{filteredCurrencies?.map((currency, idx) => (
+							<button
+								type='button'
+								key={idx}
+								className='flex justify-between w-full p-2 hover:bg-day-light-4 hover:rounded-md'
+								onClick={() => clickHandler(currency)}
+							>
+								<CurrencyOption
+									currency={currency}
+									selected={activeCurrency?.symbol === currency?.symbol}
+									showSymbol
+								/>
+							</button>
+						))}
+					</div>
 				</div>
 			)}
 		</>
