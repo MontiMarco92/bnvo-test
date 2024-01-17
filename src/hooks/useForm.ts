@@ -63,6 +63,7 @@ export const useForm = ({
 				method: 'POST',
 				body: JSON.stringify(formData),
 			});
+			console.log('🚀 ~ handleSubmit ~ res:', res);
 			const json = await res.json();
 			window.sessionStorage.setItem('paymentUri', json.payment_uri);
 			router.push(`/payment-summary/${json.identifier}`);
