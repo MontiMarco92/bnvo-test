@@ -1,4 +1,4 @@
-import { createOrder } from '@/services/postOrder';
+import { createOrder } from '@/services/createOrder';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function createOrderHandler(

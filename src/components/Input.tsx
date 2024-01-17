@@ -36,6 +36,7 @@ export const Input = ({
 					placeholder={placeHolder}
 					className={` placeholder:text-day-dark-4 placeholder:text-sm w-full outline-none focus:bg-white`}
 					value={value}
+					autoComplete='off'
 					onChange={onChangeHandler}
 				/>
 			</div>

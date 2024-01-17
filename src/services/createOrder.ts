@@ -18,6 +18,7 @@ export async function createOrder(data: any) {
 			},
 			body: newData,
 		});
+		console.log('🚀 ~ createOrder ~ response:', response);
 		const json = await response.json();
 
 		return json;
